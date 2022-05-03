@@ -146,38 +146,6 @@ extern "C" void WaveToyIMEX_Sync(CCTK_ARGUMENTS) {
   // Do nothing
 }
 
-extern "C" void WaveToyIMEX_Boundaries(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_Boundaries;
-  DECLARE_CCTK_PARAMETERS;
-
-  const CCTK_REAL t = cctk_time;
-  const CCTK_REAL dt = CCTK_DELTA_TIME;
-
-  const array<int, dim> indextype = {0, 0, 0};
-  const GF3D2layout layout(cctkGH, indextype);
-  const GF3D2<CCTK_REAL> gf_phi(layout, phi);
-  const GF3D2<CCTK_REAL> gf_zeta(layout, zeta);
-  const GF3D2<CCTK_REAL> gf_mu(layout, mu);
-  const GF3D2<CCTK_REAL> gf_nu(layout, nu);
-
-  if (CCTK_EQUALS(boundary_condition, "none")) {
-
-    // do nothing
-
-  } else if (CCTK_EQUALS(boundary_condition, "reflective")) {
-
-    loop_bnd<0, 0, 0>(cctkGH, [&](const PointDesc &p) {
-        gf_phi(p.I) = 0;
-        gf_mu(p.I) = 0;
-        gf_zeta(p.I) = 0;
-        gf_nu(p.I) = 0;
-      });
-
-  } else {
-    assert(0);
-  }
-}
-
 /////////////////////////////////////////////////////////////////////////////
 extern "C" void WaveToyIMEX_NonStiffRHS(CCTK_ARGUMENTS) {
   DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_NonStiffRHS;

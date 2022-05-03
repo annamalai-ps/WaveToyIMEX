@@ -41,9 +41,3 @@ CCTK_REAL wave_speed_zeta "wave speed zeta"
 {
   *:* :: ""
 } 2.0
-
-KEYWORD boundary_condition "Boundary condition"
-{
-  "none" :: ""
-  "reflective" :: ""
-} "none"

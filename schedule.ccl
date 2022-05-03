@@ -47,13 +47,6 @@ SCHEDULE WaveToyIMEX_Sync IN WaveToyIMEX_PostStepGroup
   SYNC: state
 } "Boundary conditions for the wave equation"
 
-SCHEDULE WaveToyIMEX_Boundaries IN WaveToyIMEX_PostStepGroup AFTER WaveToyIMEX_Sync
-{
-  LANG: C
-  READS: state(interior)
-  WRITES: state(boundary)
-} "Boundary conditions for the wave equation"
-
 SCHEDULE WaveToyIMEX_NonStiffRHS IN WaveToyIMEX_NonStiffRHSGroup
 {
   LANG: C
