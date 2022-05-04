@@ -40,6 +40,9 @@ CarpetX::dtfac = 0.1
 
 WaveToyIMEX::initial_condition = "periodic Gaussian"
 
+WaveToyIMEX::coupling_factor = 2000.0
+WaveToyIMEX::wave_speed_phi = 1.0
+WaveToyIMEX::wave_speed_zeta = 2.0
 # WaveToyIMEX::spatial_frequency_x = 0.5
 # WaveToyIMEX::spatial_frequency_y = 0.0
 # WaveToyIMEX::spatial_frequency_z = 0.0
