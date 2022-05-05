@@ -53,7 +53,14 @@ SCHEDULE WaveToyIMEX_NonStiffRHS IN WaveToyIMEX_NonStiffRHSGroup
   READS: state(everywhere)
   WRITES: phi_NonStiffRHS(interior) mu_NonStiffRHS(interior) zeta_NonStiffRHS(interior) nu_NonStiffRHS(interior)
   SYNC: nonstiffrhs
-} "Calculate non stiff RHS for the wave equation"
+} "Calculate non stiff NonStiffRHS for the wave equation"
+
+SCHEDULE WaveToyIMEX_NonStiffRHSSync IN WaveToyIMEX_NonStiffRHSGroup AFTER WaveToyIMEX_NonStiffRHS
+{
+  LANG: C
+  OPTIONS: global
+  SYNC: nonstiffrhs
+} "Sync boundary conditions for the NonStiffRHS of the wave equation"
 
 SCHEDULE WaveToyIMEX_UserSolvedFunction_G IN WaveToyIMEX_FunctionG
 {
@@ -61,4 +68,11 @@ SCHEDULE WaveToyIMEX_UserSolvedFunction_G IN WaveToyIMEX_FunctionG
   READS: phi(everywhere) mu(everywhere) zeta(everywhere) nu(everywhere)
   WRITES: phi(everywhere) mu(everywhere) zeta(everywhere) nu(everywhere) 
   SYNC: state
-} "Calculate state vector 'y1'(in explicit form)"
+} "Calculate implicit state vectors (in explicit form)"
+
+SCHEDULE WaveToyIMEX_funcGSync IN WaveToyIMEX_FunctionG AFTER WaveToyIMEX_UserSolvedFunction_G
+{
+  LANG: C
+  OPTIONS: global
+  SYNC: state
+} "Sync implicit state vectors (in explicit form)"

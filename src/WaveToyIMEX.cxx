@@ -110,6 +110,7 @@ CCTK_REAL gaussian(CCTK_REAL t, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z) {
     return (f(r - t) - f(r + t)) / r;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
 extern "C" void WaveToyIMEX_Initialize(CCTK_ARGUMENTS) {
@@ -128,7 +129,7 @@ extern "C" void WaveToyIMEX_Initialize(CCTK_ARGUMENTS) {
 
   if (CCTK_EQUALS(initial_condition, "standing wave")) {
 
-    loop_int<1, 1, 1>(cctkGH, [&](const PointDesc &p) {
+    loop_int<0, 0, 0>(cctkGH, [&](const PointDesc &p) {
       gf_phi(p.I) = standing(t, p.x, p.y, p.z);
       gf_mu(p.I) = timederiv(standing, dt)(t, p.x, p.y, p.z);
       gf_zeta(p.I) = standing(t, p.x, p.y, p.z);
@@ -213,7 +214,7 @@ extern "C" void WaveToyIMEX_NonStiffRHS(CCTK_ARGUMENTS) {
 }
 
 extern "C" void WaveToyIMEX_NonStiffRHSSync(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_NonStiffRHS;
+  DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_NonStiffRHSSync;
   DECLARE_CCTK_PARAMETERS;
 
   // Do nothing
@@ -261,7 +262,7 @@ extern "C" void WaveToyIMEX_UserSolvedFunction_G(CCTK_ARGUMENTS) {
 //////////////////////////////////////////////////////////////////////////////
 
 extern "C" void WaveToyIMEX_funcGSync(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_Sync;
+  DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_funcGSync;
   DECLARE_CCTK_PARAMETERS;
 
   // Do nothing
