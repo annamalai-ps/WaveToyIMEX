@@ -3,6 +3,7 @@
 
 KEYWORD initial_condition "Initial condition"
 {
+  "standing wave" :: ""
   "periodic Gaussian" :: ""
   "Gaussian" :: ""
 } "periodic Gaussian"

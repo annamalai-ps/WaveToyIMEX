@@ -75,6 +75,16 @@ template <typename T> auto zderiv(T f(T t, T x, T y, T z), T dz) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Standing wave
+CCTK_REAL standing(CCTK_REAL t, CCTK_REAL x, CCTK_REAL y, CCTK_REAL z) {
+  DECLARE_CCTK_PARAMETERS;
+  auto kx = 2 * M_PI * spatial_frequency_x;
+  auto ky = 2 * M_PI * spatial_frequency_y;
+  auto kz = 2 * M_PI * spatial_frequency_z;
+  auto omega = sqrt(pow(kx, 2) + pow(ky, 2) + pow(kz, 2));
+  return cos(omega * t) * cos(kx * x) * cos(ky * y) * cos(kz * z);
+}
+
 // Periodic Gaussian
 CCTK_REAL periodic_gaussian(CCTK_REAL t, CCTK_REAL x, CCTK_REAL y,
                             CCTK_REAL z) {
@@ -116,7 +126,14 @@ extern "C" void WaveToyIMEX_Initialize(CCTK_ARGUMENTS) {
   const GF3D2<CCTK_REAL> gf_mu(layout, mu);
   const GF3D2<CCTK_REAL> gf_nu(layout, nu);
 
-  if (CCTK_EQUALS(initial_condition, "periodic Gaussian")) {
+  if (CCTK_EQUALS(initial_condition, "standing wave")) {
+
+    loop_int<1, 1, 1>(cctkGH, [&](const PointDesc &p) {
+      gf_phi(p.I) = standing(t, p.x, p.y, p.z);
+      gf_psi(p.I) = timederiv(standing, dt)(t, p.x, p.y, p.z);
+    });
+
+  } else if (CCTK_EQUALS(initial_condition, "periodic Gaussian")) {
 
     loop_int<0, 0, 0>(cctkGH, [&](const PointDesc &p) {
       gf_phi(p.I) = periodic_gaussian(t, p.x, p.y, p.z);
