@@ -21,7 +21,10 @@ CarpetX::ncells_x = $ncells
 CarpetX::ncells_y = $ncells
 CarpetX::ncells_z = $ncells
 
-# Set continous periodic boundaries:
+#Set ghost zones for 4th order finite difference method:
+CarpetX::ghost_size = 2
+
+# Set periodic boundaries:
 CarpetX::periodic_x = yes
 CarpetX::periodic_y = yes
 CarpetX::periodic_z = yes
