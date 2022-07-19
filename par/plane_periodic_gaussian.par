@@ -30,8 +30,6 @@ CarpetX::periodic_y = yes
 CarpetX::periodic_z = yes
 
 CarpetX::max_num_levels = $nlevels
-# CarpetX::regrid_every = 40
-# CarpetX::regrid_error_threshold = 1.0   #TODO 0.01
 
 ODESolvers::method = "IMEX_ARS343"
 CarpetX::dtfac = 0.1
@@ -47,7 +45,7 @@ WaveToyIMEX::wave_speed_zeta = 2.0
 
 IO::out_dir = $parfile
 # High frequency output to make a movie
-IO::out_every = 40   #TODO $ncells * 2 ** ($nlevels - 1) / 2
+IO::out_every = 40 
 
 CarpetX::out_tsv = no
 CarpetX::out_openpmd_vars = "

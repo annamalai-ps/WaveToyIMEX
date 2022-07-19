@@ -7,4 +7,4 @@ Maintainer(s): Annamalai P S <annamalaips.97@gmail.com>
 
 A coupled scalar wave toy evolved using Implicit-Explicit (IMEX) integrators and the CarpetX driver, using CPU kernels.
 
-Visit: https://github.com/annamalai-ps/IMEX/tree/main/IMEX_1D_scalar_wave_evolution
+More info: https://github.com/annamalai-ps/IMEX/tree/main/IMEX_1D_scalar_wave_evolution

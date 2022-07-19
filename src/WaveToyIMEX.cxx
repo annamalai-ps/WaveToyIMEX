@@ -12,6 +12,8 @@
 #include <cmath>
 #include <iostream>
 
+extern CCTK_REAL ODESolvers_alpha;
+
 namespace WaveToyIMEX {
 using namespace std;
 using namespace Loop;
@@ -118,9 +120,8 @@ extern "C" void WaveToyIMEX_Initialize(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
 
   const CCTK_REAL t = cctk_time;
-  const CCTK_REAL dt = CCTK_DELTA_TIME;
 
-  const array<int, dim> indextype = {0, 0, 0};
+  const array<int, dim> indextype = {0, 0, 0}; // using vertex coordinates
   const GF3D2layout layout(cctkGH, indextype);
   const GF3D2<CCTK_REAL> gf_phi(layout, phi);
   const GF3D2<CCTK_REAL> gf_zeta(layout, zeta);
@@ -172,7 +173,7 @@ extern "C" void WaveToyIMEX_NonStiffRHS(CCTK_ARGUMENTS) {
   DECLARE_CCTK_PARAMETERS;
 
 
-  const array<int, dim> indextype = {0, 0, 0};
+  const array<int, dim> indextype = {0, 0, 0}; // use vertex coordinates
   const GF3D2layout layout(cctkGH, indextype);
   const GF3D2<const CCTK_REAL> gf_phi(layout,phi);
   const GF3D2<const CCTK_REAL> gf_zeta(layout,zeta);
@@ -183,6 +184,7 @@ extern "C" void WaveToyIMEX_NonStiffRHS(CCTK_ARGUMENTS) {
   const GF3D2<CCTK_REAL> gf_zeta_NonStiffRHS(layout,zeta_NonStiffRHS);
   const GF3D2<CCTK_REAL> gf_mu_NonStiffRHS(layout,mu_NonStiffRHS);
   const GF3D2<CCTK_REAL> gf_nu_NonStiffRHS(layout,nu_NonStiffRHS);
+
 
   loop_int<0, 0, 0>(cctkGH, [&](const PointDesc &p) {
 
@@ -210,7 +212,6 @@ extern "C" void WaveToyIMEX_NonStiffRHS(CCTK_ARGUMENTS) {
 
     gf_nu_NonStiffRHS(p.I) = pow(wave_speed_zeta,2) * (ddx_zeta + ddy_zeta + ddz_zeta);
     gf_zeta_NonStiffRHS(p.I) = gf_nu(p.I);
-
   });
 }
 
@@ -222,15 +223,14 @@ extern "C" void WaveToyIMEX_NonStiffRHSSync(CCTK_ARGUMENTS) {
 }
 
 extern "C" void WaveToyIMEX_UserSolvedFunction_G(CCTK_ARGUMENTS) {
-  // beta = y0 + (dt/2)*k1_hat
-  // y1 = (dt/2)*g(y1) - beta
+  // beta = y0 + alpha*k1_hat
+  // y1 = alpha*g(y1) - beta
   // y1 -> output of 'UserSolvedFunction_G(alpha,beta)'
   // but this routine 'UserSolvedFunction_G()' receives beta as state vector
   // Hence, here state vector = beta
   DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_UserSolvedFunction_G;
   DECLARE_CCTK_PARAMETERS;
 
-  const CCTK_REAL alpha = CCTK_DELTA_TIME;
 
   const array<int, dim> indextype = {0, 0, 0};
   const GF3D2layout layout(cctkGH, indextype);
@@ -244,11 +244,14 @@ extern "C" void WaveToyIMEX_UserSolvedFunction_G(CCTK_ARGUMENTS) {
   const GF3D2<CCTK_REAL> gf_mu_1(layout,mu);
   const GF3D2<CCTK_REAL> gf_nu_1(layout,nu);
 
+
   loop_int<0, 0, 0>(cctkGH, [&](const PointDesc &p) {
+
     gf_phi_1(p.I) = gf_phi(p.I);
     gf_mu_1(p.I) = gf_mu(p.I);
-    gf_zeta_1(p.I) = (gf_zeta(p.I) + alpha*coupling_factor*gf_phi_1(p.I))/(1 + alpha*coupling_factor);
+    gf_zeta_1(p.I) = (gf_zeta(p.I) + ODESolvers_alpha*coupling_factor*gf_phi_1(p.I))/(1 + ODESolvers_alpha*coupling_factor);
     gf_nu_1(p.I) = gf_nu(p.I);
+
   });
   
   // Now store calculated 'y1' in original state vector
@@ -257,17 +260,11 @@ extern "C" void WaveToyIMEX_UserSolvedFunction_G(CCTK_ARGUMENTS) {
     gf_mu(p.I) = gf_mu_1(p.I);
     gf_zeta(p.I) = gf_zeta_1(p.I);
     gf_nu(p.I) = gf_nu_1(p.I);
+
   });
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-extern "C" void WaveToyIMEX_funcGSync(CCTK_ARGUMENTS) {
-  DECLARE_CCTK_ARGUMENTS_WaveToyIMEX_funcGSync;
-  DECLARE_CCTK_PARAMETERS;
-
-  // Do nothing
-}
 
 
 } // namespace WaveToyIMEX

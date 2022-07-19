@@ -6,7 +6,6 @@ SCHEDULE GROUP WaveToyIMEX_InitialGroup AT initial
 } "Set up initial conditions"
 
 
-
 SCHEDULE GROUP WaveToyIMEX_PostStepGroup AT postinitial
 {
 } "Post-process state variables"
@@ -60,7 +59,8 @@ SCHEDULE WaveToyIMEX_NonStiffRHSSync IN WaveToyIMEX_NonStiffRHSGroup AFTER WaveT
   LANG: C
   OPTIONS: global
   SYNC: nonstiffrhs
-} "Sync boundary conditions for the NonStiffRHS of the wave equation"
+} "Sync NonStiffRHS of the wave equation"
+
 
 SCHEDULE WaveToyIMEX_UserSolvedFunction_G IN WaveToyIMEX_FunctionG
 {
@@ -69,10 +69,3 @@ SCHEDULE WaveToyIMEX_UserSolvedFunction_G IN WaveToyIMEX_FunctionG
   WRITES: phi(everywhere) mu(everywhere) zeta(everywhere) nu(everywhere) 
   SYNC: state
 } "Calculate implicit state vectors (in explicit form)"
-
-SCHEDULE WaveToyIMEX_funcGSync IN WaveToyIMEX_FunctionG AFTER WaveToyIMEX_UserSolvedFunction_G
-{
-  LANG: C
-  OPTIONS: global
-  SYNC: state
-} "Sync implicit state vectors (in explicit form)"

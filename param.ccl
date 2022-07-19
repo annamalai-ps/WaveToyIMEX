@@ -26,7 +26,7 @@ CCTK_REAL spatial_frequency_z "spatial frequency"
 CCTK_REAL width "width"
 {
   (0.0:* :: ""
-} 0.1
+} 0.5
 
 CCTK_REAL coupling_factor "coupling factor"
 {
